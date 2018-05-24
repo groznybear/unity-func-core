@@ -9,10 +9,8 @@
         public delegate void UnwrapDelegate(bool hasValue, T content, ExceptionOfMaybe<T> exce);
 
         public bool HasValue { get { return !IsNull(Value); } }
-
         private T Value;
         private ExceptionOfMaybe<T> Exception;
-
 
         /// <summary>
         /// Static wrapper
@@ -20,7 +18,6 @@
         /// <returns>Maybe with value</returns>
         /// <param name="obj">Object to wrap</param>
         public static Maybe<T> Wrap(T obj) => new Maybe<T>(obj);
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Core.Maybe.Maybe`1"/> struct.
@@ -34,6 +31,7 @@
 
             Exception.Wrap(this);
         }
+
         /// <summary>
         /// Compare wrapped value with something
         /// </summary>
@@ -47,7 +45,7 @@
         /// <returns>Comparison result</returns>
         /// <param name="another">Another Maybe to compare with</param>
         /// <param name="predicate">Predicate</param>
-        public bool Compare(Maybe<T> another, Func<T, T, bool> predicate) => HasValue && another.HasValue && predicate(Value, another.Value);
+        public bool Compare(Maybe<T> another, Func<T, T, bool> comparison) => HasValue && another.HasValue && comparison(Value, another.Value);
 
         /// <summary>
         /// Casts wrapped value using AS to specified type.
@@ -61,7 +59,7 @@
         /// </summary>
         /// <returns>Specified replacement</returns>
         /// <param name="replacement">Replacement provider</param>
-        public Maybe<T> ReplaceWithAnother(Func<Maybe<T>> replacement) => HasValue ? this : replacement();
+        public Maybe<T> Substitute(Func<Maybe<T>> replacement) => HasValue ? this : replacement();
 
         /// <summary>
         /// Returns selected value from wrapped value
@@ -70,7 +68,7 @@
         /// <param name="predicate">What to return?</param>
         /// <param name="defaultValue">If wrapped value is NULL, will return specified default value</param>
         /// <typeparam name="R">Type of value to return</typeparam>
-        public R Return<R>(Func<T, R> predicate, R defaultValue = default(R)) => HasValue ? predicate(Value) : defaultValue;
+        public R TakeFrom<R>(Func<T, R> predicate, R defaultValue = default(R)) => HasValue ? predicate(Value) : defaultValue;
 
         /// <summary>
         /// Expose all content of Maybe as is
@@ -140,6 +138,9 @@
         /// <param name="toCheck">Object to check</param>
         /// <typeparam name="R">Type of object</typeparam>
         private bool IsNull<R>(R toCheck) => EqualityComparer<R>.Default.Equals(toCheck, default(R)) || toCheck.Equals(null);
+
+        public static implicit operator T(Maybe<T> maybe) => maybe.Value;
+        public static implicit operator Maybe<T>(T valueTo) => new Maybe<T>(valueTo);
     }
 
     public class ExceptionOfMaybe<T> : Exception where T : class

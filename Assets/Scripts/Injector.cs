@@ -80,7 +80,7 @@
             name = $"[{GetType().Name}]";
         }
 
-        public static Maybe<T> Get<T>() where T : class => ExistingEntry<T>().Return(x => x.Pool != null ? x.Pool.Get<T>(x.Manufacture) : x.Manufacture().Cast<T>());
+        public static Maybe<T> Get<T>() where T : class => ExistingEntry<T>().TakeFrom(x => x.Pool != null ? x.Pool.Get<T>(x.Manufacture) : x.Manufacture().Cast<T>());
 
         public static void CreateBinding<Interface, Concrete>(CreationDelegate _creation) where Interface : class, IInjectingItem
                                                                                           where Concrete : class, IInjectingItem

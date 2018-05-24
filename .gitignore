@@ -2,3 +2,8 @@ FuncCoreFramework.userprefs
 FuncCoreFramework.csproj
 FuncCoreFramework.sln
 [Ll]ibrary
+[Tt]emp
+.vscode/
+*.csproj
+obj/
+*.sln
